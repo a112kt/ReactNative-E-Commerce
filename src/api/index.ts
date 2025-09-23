@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: '', 
+  baseURL: 'https://ecommerce.routemisr.com', 
   headers: {
     'Content-Type': 'application/json',
   },

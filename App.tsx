@@ -1,18 +1,28 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { ActivityIndicator, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import RootNaviagtion from "./src/navigation/index";
+import { store, persistor } from "./src/redux/store"; 
+import Toast from "react-native-toast-message";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>App</Text>
-    </View>
+    <Provider store={store}>
+      <PersistGate
+        loading={
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <ActivityIndicator size="large" />
+          </View>
+        }
+        persistor={persistor}
+      >
+        <SafeAreaProvider>
+          <RootNaviagtion />
+          <Toast />
+        </SafeAreaProvider>
+      </PersistGate>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,                
-    justifyContent: 'center', 
-    alignItems: 'center',     
-  },
-});
