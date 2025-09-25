@@ -17,9 +17,10 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation";
 import axios from "axios";
-import Toast from "react-native-toast-message"; 
-
-
+import Toast from "react-native-toast-message";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../redux/store";
+import { setToken } from "../redux/slices/tokenSlice";
 
 type FormValues = {
   name: string;
@@ -30,10 +31,9 @@ type FormValues = {
 };
 
 export default function Registration() {
-  
- 
   type LoginNavProp = NativeStackNavigationProp<RootStackParamList, "Login">;
   const navigation = useNavigation<LoginNavProp>();
+  const dispatch = useDispatch<AppDispatch>();
 
   const initialValues: FormValues = {
     name: "",
@@ -82,7 +82,6 @@ export default function Registration() {
       );
 
       console.log("Signup success:", response.data);
-      
 
       // Toast success
       Toast.show({
@@ -93,11 +92,14 @@ export default function Registration() {
         visibilityTime: 3000,
         autoHide: true,
       });
-
+      // little change about the navigation (as the user should be directed to home after registration not to login)
       helpers.resetForm();
-      navigation.navigate("Login");
-      const token = response.data.token
-      console.log(token)
+     
+      const token = response.data.token;
+      if (token) {
+        dispatch(setToken(token));
+         navigation.navigate("MyTabs");
+      }
     } catch (error: any) {
       console.log("Axios error full:", error);
 
@@ -121,7 +123,8 @@ export default function Registration() {
             autoHide: true,
           });
         } else if (error.response.status === 400) {
-          const msg = serverData?.message || "Invalid data. Please check inputs.";
+          const msg =
+            serverData?.message || "Invalid data. Please check inputs.";
           Toast.show({
             type: "info",
             text1: "Validation error",
@@ -164,9 +167,8 @@ export default function Registration() {
   });
 
   return (
-   
     <SafeAreaView style={styles.container}>
-       <StatusBar barStyle="light-content" backgroundColor="#000" />
+      <StatusBar barStyle="light-content" backgroundColor="#000" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ width: "100%" }}
@@ -245,7 +247,9 @@ export default function Registration() {
               onPress={() => Formik.handleSubmit()}
               style={[
                 styles.button,
-                (Formik.isSubmitting || !Formik.isValid || !Formik.dirty) && { opacity: 0.6 },
+                (Formik.isSubmitting || !Formik.isValid || !Formik.dirty) && {
+                  opacity: 0.6,
+                },
               ]}
               disabled={Formik.isSubmitting || !Formik.isValid || !Formik.dirty}
             >
@@ -257,7 +261,9 @@ export default function Registration() {
             </TouchableOpacity>
 
             <View style={styles.haveAccount}>
-              <Text style={styles.haveAccountText}>I Already Have Account </Text>
+              <Text style={styles.haveAccountText}>
+                I Already Have Account{" "}
+              </Text>
               <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                 <Text style={styles.haveAccountbtn}>Sign In</Text>
               </TouchableOpacity>
@@ -298,7 +304,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
     textAlign: "center",
-    fontStyle:"italic"
+    fontStyle: "italic",
   },
   label: {
     fontSize: 14,
@@ -306,7 +312,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 4,
     color: "#fff",
-    fontStyle:"italic"
+    fontStyle: "italic",
   },
   input: {
     borderWidth: 1,
@@ -341,7 +347,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
-    fontStyle:"italic"
+    fontStyle: "italic",
   },
   haveAccount: {
     flexDirection: "row",
@@ -352,12 +358,12 @@ const styles = StyleSheet.create({
   haveAccountText: {
     color: "#fff",
     fontSize: 12,
-    fontStyle:"italic"
+    fontStyle: "italic",
   },
-  haveAccountbtn:{
-     textDecorationLine: "underline",
+  haveAccountbtn: {
+    textDecorationLine: "underline",
     color: "green",
     fontSize: 16,
-    cursor:"pointer"
-  }
+    cursor: "pointer",
+  },
 });

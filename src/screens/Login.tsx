@@ -27,11 +27,10 @@ type FormValues = {
 };
 
 export default function Login() {
-
   const dispatch = useDispatch<AppDispatch>();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "Login">>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, "Login">>();
   const [serverError, setServerError] = useState<string>("");
-
 
   const initialValues: FormValues = {
     email: "",
@@ -70,7 +69,8 @@ export default function Login() {
 
       const token = response.data.token;
       if (token) {
-        dispatch(setToken(token));        navigation.replace("Home");
+        dispatch(setToken(token));
+        navigation.replace("MyTabs");
       } else {
         setServerError("Login succeeded but no token returned.");
       }
@@ -79,7 +79,10 @@ export default function Login() {
 
       if (error.response) {
         console.log("Status:", error.response.status);
-        console.log("Response data:", JSON.stringify(error.response.data, null, 2));
+        console.log(
+          "Response data:",
+          JSON.stringify(error.response.data, null, 2)
+        );
         console.log("Response headers:", error.response.headers);
 
         const status = error.response.status;
@@ -150,14 +153,14 @@ export default function Login() {
     onSubmit: handleSubmit,
   });
 
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000" />
       <Pressable
         style={styles.backButton}
         onPress={() => {
-          if (navigation.canGoBack && navigation.canGoBack()) navigation.goBack();
+          if (navigation.canGoBack && navigation.canGoBack())
+            navigation.goBack();
           else navigation.navigate("Register");
         }}
       >
@@ -201,7 +204,9 @@ export default function Login() {
           <Text style={styles.error}>{formik.errors.password}</Text>
         )}
 
-        {serverError ? <Text style={[styles.error, { marginTop: 6 }]}>{serverError}</Text> : null}
+        {serverError ? (
+          <Text style={[styles.error, { marginTop: 6 }]}>{serverError}</Text>
+        ) : null}
 
         <View style={styles.forgetPassword}>
           <Text style={styles.forgetPasswordText}>Forget Password?</Text>
@@ -287,4 +292,3 @@ const styles = StyleSheet.create({
   forgetPasswordText: { color: "#fff", fontSize: 16, fontStyle: "italic" },
   clickbtn: { textDecorationLine: "underline", color: "green", fontSize: 16 },
 });
-

@@ -15,7 +15,10 @@ import { useSelector } from "react-redux";
 import type { RootStackParamList } from "../navigation";
 import type { RootState } from "../redux/store";
 
-type SplashNavigationProp = NativeStackNavigationProp<RootStackParamList, "Splash">;
+type SplashNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Splash"
+>;
 
 const SPLASH_DELAY = 1500;
 
@@ -41,7 +44,7 @@ const Splash: React.FC = () => {
     }
   };
 
-  const proceedNavigation = (target: "Home" | "Register" | "Login") => {
+  const proceedNavigation = (target: "MyTabs" | "Login" | "Register") => {
     if (didNavigateRef.current) return;
     didNavigateRef.current = true;
 
@@ -55,7 +58,7 @@ const Splash: React.FC = () => {
         toValue: 1.2,
         duration: 300,
         useNativeDriver: true,
-      })
+      }),
     ]).start(() => {
       navigation.replace(target);
     });
@@ -65,8 +68,8 @@ const Splash: React.FC = () => {
     if (didNavigateRef.current) return;
     clearNavigateTimer();
 
-    const navigateTo = token ? "Home" : "Register";
-    
+    const navigateTo = token ? "MyTabs" : "Login";
+
     timerRef.current = setTimeout(() => {
       proceedNavigation(navigateTo);
     }, SPLASH_DELAY);
@@ -91,7 +94,7 @@ const Splash: React.FC = () => {
         duration: 800,
         useNativeDriver: true,
         easing: Easing.out(Easing.cubic),
-      })
+      }),
     ]).start();
 
     Animated.loop(
@@ -158,28 +161,25 @@ const Splash: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.Text 
+      <Animated.Text
         style={[
           styles.title,
           {
             opacity: fadeAnim,
-            transform: [
-              { scale: scaleAnim },
-              { translateY: slideAnim }
-            ]
-          }
+            transform: [{ scale: scaleAnim }, { translateY: slideAnim }],
+          },
         ]}
       >
         Shop.Co
       </Animated.Text>
-      
-      <Animated.View 
+
+      <Animated.View
         style={[
           styles.statusBox,
           {
             opacity: fadeAnim,
-            transform: [{ scale: pulseAnim }]
-          }
+            transform: [{ scale: pulseAnim }],
+          },
         ]}
       >
         {isConnected === null ? (
@@ -238,4 +238,3 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
-
